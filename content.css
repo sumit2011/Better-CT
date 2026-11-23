@@ -1,0 +1,88 @@
+/* Floating Toolbar */
+
+#oracle-toolbar {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+
+    z-index: 2147483647;
+
+    width: 50px;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    padding: 6px 0;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Drag Handle */
+
+#dragHandle {
+    width: 100%;
+
+    text-align: center;
+
+    cursor: move;
+
+    user-select: none;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    color: #555;
+
+    margin-bottom: 6px;
+}
+
+/* Buttons */
+
+#oracle-toolbar button {
+    background: transparent;
+
+    border: none;
+
+    width: 40px;
+    height: 40px;
+
+    cursor: pointer;
+
+    font-size: 22px;
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+
+    padding: 0;
+}
+
+/* Remove Browser Focus Outline */
+
+#oracle-toolbar button:focus {
+    outline: none;
+}
+
+/* Capture Icon */
+
+.capture-btn {
+    color: #2e7d32;
+}
+
+/* PDF Icon */
+
+.pdf-btn {
+    color: #d84315;
+}
