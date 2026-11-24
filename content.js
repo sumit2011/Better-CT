@@ -20,6 +20,12 @@
     </button>
 
     <button
+        class="delay-capture-btn"
+        title="Capture Screenshot with 3s Delay">
+        ⏱️
+    </button>
+
+    <button
         class="pdf-btn"
         title="Generate PDF">
         📄
@@ -37,6 +43,10 @@
     toolbar
         .querySelector(".pdf-btn")
         .addEventListener("click", generatePdf);
+    
+    toolbar
+        .querySelector(".delay-capture-btn")
+        .addEventListener("click",captureWithDelay);
 
 })();
 
@@ -76,6 +86,36 @@ function captureStep() {
     }, 300);
 }
 
+function captureWithDelay() {
+
+    const toolbar =
+        document.getElementById("oracle-toolbar");
+    
+    const stepTitle = prompt("Enter Step Description");
+
+    if(stepTitle === null){
+        return;
+    }
+
+    if(stepTitle.trim() === ""){
+        return;
+    }
+
+    toolbar.style.display = "none";
+
+    setTimeout(() => {
+
+        chrome.runtime.sendMessage({
+            action: "capture",
+            title: stepTitle,
+            pageTitle: document.title,
+            url: location.href
+        });
+
+        toolbar.style.display = "block";
+
+    }, 3000);
+}
 function generatePdf() {
 
     chrome.runtime.sendMessage({
