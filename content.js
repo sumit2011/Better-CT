@@ -51,27 +51,16 @@
 })();
 
 function captureStep() {
+    const toolbar = document.getElementById("oracle-toolbar");
+    const stepTitle = prompt("Enter Step Description");
 
-    const toolbar =
-        document.getElementById("oracle-toolbar");
-
-    const stepTitle =
-        prompt("Enter Step Description");
-        
-
-    
-    if(stepTitle === null){
+    if (stepTitle === null || stepTitle.trim() === "") {
         return;
     }
 
-    if(stepTitle.trim() === ""){
-        return;
-    }
-    
     toolbar.style.display = "none";
 
     setTimeout(() => {
-
         chrome.runtime.sendMessage({
             action: "capture",
             title: stepTitle,
@@ -80,31 +69,22 @@ function captureStep() {
         });
 
         setTimeout(() => {
-            toolbar.style.display = "block";
+            toolbar.style.display = ""; // Restores CSS `display: flex`
         }, 800);
-
     }, 300);
 }
 
 function captureWithDelay() {
-
-    const toolbar =
-        document.getElementById("oracle-toolbar");
-    
+    const toolbar = document.getElementById("oracle-toolbar");
     const stepTitle = prompt("Enter Step Description");
 
-    if(stepTitle === null){
-        return;
-    }
-
-    if(stepTitle.trim() === ""){
+    if (stepTitle === null || stepTitle.trim() === "") {
         return;
     }
 
     toolbar.style.display = "none";
 
     setTimeout(() => {
-
         chrome.runtime.sendMessage({
             action: "capture",
             title: stepTitle,
@@ -112,59 +92,56 @@ function captureWithDelay() {
             url: location.href
         });
 
-        toolbar.style.display = "block";
-
+        toolbar.style.display = ""; // Restores CSS `display: flex`
     }, 3000);
 }
-function generatePdf() {
 
+function generatePdf() {
     chrome.runtime.sendMessage({
         action: "generatePdf"
     });
 }
 
 function makeToolbarDraggable(toolbar) {
+    if (!toolbar) return;
 
-    const handle =
-        toolbar.querySelector("#dragHandle");
+    const handle = toolbar.querySelector("#dragHandle");
+    if (!handle) return;
 
     let isDragging = false;
-
     let offsetX = 0;
     let offsetY = 0;
 
     handle.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return;
 
-        isDragging = true;
+        const rect = toolbar.getBoundingClientRect();
 
-        offsetX =
-            e.clientX -
-            toolbar.getBoundingClientRect().left;
-
-        offsetY =
-            e.clientY -
-            toolbar.getBoundingClientRect().top;
-
+        toolbar.style.left = `${rect.left}px`;
+        toolbar.style.top = `${rect.top}px`;
         toolbar.style.right = "auto";
+
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        isDragging = true;
 
         e.preventDefault();
     });
 
     document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
 
-        if (!isDragging) {
-            return;
-        }
+        const maxLeft = Math.max(0, window.innerWidth - toolbar.offsetWidth);
+        const maxTop = Math.max(0, window.innerHeight - toolbar.offsetHeight);
 
-        toolbar.style.left =
-            (e.clientX - offsetX) + "px";
+        const nextLeft = Math.min(Math.max(0, e.clientX - offsetX), maxLeft);
+        const nextTop = Math.min(Math.max(0, e.clientY - offsetY), maxTop);
 
-        toolbar.style.top =
-            (e.clientY - offsetY) + "px";
+        toolbar.style.left = `${nextLeft}px`;
+        toolbar.style.top = `${nextTop}px`;
     });
 
     document.addEventListener("mouseup", () => {
-
         isDragging = false;
     });
 }
